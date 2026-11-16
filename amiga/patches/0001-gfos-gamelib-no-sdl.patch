@@ -1,0 +1,13 @@
+--- a/src/main.c
++++ b/src/main.c
+@@ -13,9 +13,7 @@
+ #include <types.h>
+ #include <gamelib.h>
+ 
+-/* Nothing in this file uses SDL, but we still have to include SDL.h for Macs,
+- * since they do some extra magic in the file WRT the main() function: */
+-#include <SDL/SDL.h>
++/* GFOS: no SDL; the gamelib is amiga/tt_gamelib.c on ACGame */
+ 
+ 	
+ int main(int argc, char *argv[]) {

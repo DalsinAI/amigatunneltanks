@@ -1,0 +1,10 @@
+# The upstream TunnelTanks the port builds: raydog/tunneltanks at this
+# commit (Raymond Myers' remake of Geoffrey Silverton's 1991 DOS game
+# Tunneler, 0.5 alpha with its gamelib layer; GPL-3.0), fetched by
+# package/prepare-source.sh and never kept in this repository.
+TT_GIT=https://github.com/raydog/tunneltanks
+TT_COMMIT=44cf22841b8a147c0189c5a5066ff10aa2afefd2
+TT_VERSION=0.5
+PORT_VERSION=0.5-gfos1
+# DalsinAI/acgame: acgame.library and its stubs, built with the game
+ACGAME_REF=05f72b98d05044b149be315400bb6e196b42799d
