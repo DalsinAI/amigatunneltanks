@@ -7,4 +7,4 @@ TT_COMMIT=44cf22841b8a147c0189c5a5066ff10aa2afefd2
 TT_VERSION=0.5
 PORT_VERSION=0.5-gfos1
 # DalsinAI/acgame: acgame.library and its stubs, built with the game
-ACGAME_REF=05f72b98d05044b149be315400bb6e196b42799d
+ACGAME_REF=1acbf1e766a3c06487ec232ec99b023313af3e4e
