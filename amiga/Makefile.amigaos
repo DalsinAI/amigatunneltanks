@@ -1,0 +1,76 @@
+# TunnelTanks for GFOS (AmigaOS 3.2 with GFOpenUp), 68040/68060: the
+# two-player tunnel tank game on ACGame's 8-bit screen (acgame.library,
+# opened at run time through the libacgame.a stubs), no SDL and no
+# GFOpenGPU, built soft float.
+#
+#   make -f amiga/Makefile.amigaos -j4 TT=/path/to/prepared \
+#        ACGAME=/path/to/acgame ACGAMELIB=/path/to/acgame-out [STOVE=...]
+#
+# TT is what package/prepare-source.sh makes: src/src/ (upstream's game
+# and its headers, patched; its SDL and Android gamelibs left out).
+# ACGAME is DalsinAI/acgame (its headers), ACGAMELIB its build
+# (libacgame.a, the stubs that open acgame.library, and acgame.library).
+#
+# Output: build/amigaos/TunnelTanks/ (the drawer: the program,
+# Libs/acgame.library, ReadMe, the licence, the icons) and
+# build/amigaos/TunnelTanks.info and Install-TunnelTanks beside it.
+
+TT        ?= ../tt-prepared
+ACGAME    ?= ../acgame
+ACGAMELIB ?= $(ACGAME)/build-amiga
+STOVE     ?= $(HOME)/AmiCradle/stoves/os32-gcc16-open6
+PREFIX    ?= $(STOVE)/prefix
+CC        = $(PREFIX)/bin/m68k-amigaos-gcc
+CPU       ?= -m68040 -msoft-float
+# -fno-tree-loop-distribute-patterns: GCC 16's loop miscompile.
+OPT       ?= -O2 -fomit-frame-pointer -fno-tree-loop-distribute-patterns
+
+INC       = -I$(TT)/src/src/include -Iamiga -I$(ACGAME)/include
+# upstream's warnings are upstream's (-w)
+UPFLAGS   = -noixemul $(OPT) $(CPU) -std=gnu99 -w $(INC)
+CFLAGS    = -noixemul $(OPT) $(CPU) -std=gnu99 -Wall -Werror $(INC)
+LDFLAGS   = -noixemul $(CPU)
+LIBS      = $(ACGAMELIB)/libacgame.a -lm
+
+BUILD     = build/amigaos
+OBJ       = $(BUILD)/obj
+DRAWER    = $(BUILD)/TunnelTanks
+
+UPSRC     = $(wildcard $(TT)/src/src/*.c)
+OURS      = tt_gamelib tt_acgame
+OBJS      = $(UPSRC:$(TT)/src/src/%.c=$(OBJ)/up/%.o) $(OURS:%=$(OBJ)/%.o)
+HDRS      = $(wildcard amiga/*.h) $(wildcard $(TT)/src/src/include/*.h)
+
+all: program package
+
+program: $(OBJ)/TunnelTanks
+
+$(OBJ)/up/%.o: $(TT)/src/src/%.c $(HDRS)
+	@mkdir -p $(dir $@)
+	$(CC) $(UPFLAGS) -c -o $@ $<
+
+$(OBJ)/%.o: amiga/%.c $(HDRS)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(OBJ)/TunnelTanks: $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
+
+package: program AMIGA_PORT.md
+	rm -rf $(DRAWER)
+	mkdir -p $(DRAWER)/Libs
+	cp $(OBJ)/TunnelTanks $(DRAWER)/TunnelTanks
+	cp amiga/icons/TunnelTanks.info $(DRAWER)/TunnelTanks.info
+	cp $(ACGAMELIB)/acgame.library $(DRAWER)/Libs/
+	cp AMIGA_PORT.md $(DRAWER)/ReadMe
+	cp amiga/icons/ReadMe.info $(DRAWER)/ReadMe.info
+	cp $(TT)/LICENSE $(DRAWER)/LICENSE.txt
+	cp amiga/icons/ReadMe.info $(DRAWER)/LICENSE.txt.info
+	cp amiga/icons/TunnelTanks-drawer.info $(BUILD)/TunnelTanks.info
+	cp amiga/Install-TunnelTanks amiga/Install-TunnelTanks.info $(BUILD)/
+
+clean:
+	rm -rf $(BUILD)
+
+.PHONY: all program package clean
+.SECONDARY:

@@ -1,0 +1,15 @@
+{
+  "name": "TunnelTanks",
+  "version": "0.5-gfos1",
+  "drawer": "TunnelTanks",
+  "program": "TunnelTanks",
+  "cpu": "68040",
+  "fpu": false,
+  "space": 300000,
+  "modules": [],
+  "libraries": ["acgame.library"],
+  "keep": [],
+  "parent": "Work:Games",
+  "badge": "icons/art/tunneltanks.png",
+  "script": "Install-TunnelTanks"
+}
